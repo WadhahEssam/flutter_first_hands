@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Startup Name Generator',
-      theme: ThemeData.dark(),
+      theme: ThemeData(primarySwatch: Colors.red),
       home: RandomWords(),
       debugShowCheckedModeBanner: false,
     );
@@ -37,7 +37,7 @@ class RandomWordsState extends State<RandomWords> {
   final _suggestions  = <WordPair>[];
   final _biggerFont = const TextStyle(fontSize: 20.0);
 
-  void _pushSaved() {
+  void _pushSaved({title = 'names that you saved'}) {
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context) {
@@ -51,13 +51,14 @@ class RandomWordsState extends State<RandomWords> {
           final List<Widget> divided = ListTile.divideTiles(context: context, tiles: tiles).toList();
 
           return new Scaffold(
-            appBar: AppBar(title: Text('The saved names')),
+            appBar: AppBar(title: Text(title)),
             body: new ListView(children: divided),
           );
         },
       )
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +68,29 @@ class RandomWordsState extends State<RandomWords> {
         actions: <Widget>[IconButton(icon: const Icon(Icons.list), onPressed: _pushSaved),],
       ),
       body: _buildSuggestions(),
-    );
-  }
+      bottomNavigationBar: BottomNavigationBar(
+       items: <BottomNavigationBarItem>[
+         BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+         BottomNavigationBarItem(icon: Icon(Icons.favorite), title: Text('Favorate')),
+         BottomNavigationBarItem(icon: Icon(Icons.school), title: Text('School')),
+       ],
+       currentIndex: _selectedIndex,
+       fixedColor: Colors.red,
+       onTap: _onItemTapped,
+    )
+    );}
+
+ void _onItemTapped(int index) {
+   setState(() {
+     _selectedIndex = index;
+   });
+   if (index == 1) {
+     _pushSaved(title: 'SAVED RANDOM NAMES');
+   }
+ }
+
+  int _selectedIndex = 1;
+
 
   // item builder defines a callback that is called once
   // every one list item is going to be created
